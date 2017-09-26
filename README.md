@@ -148,3 +148,27 @@ ___Packages and tools used:___
 ```
 
 ## Bundling
+- create file `webpack.config.dev.js`
+- copy/paste the contents from [github](https://gist.github.com/coryhouse/d611e83e432f3ae65cc46ebb9b599930)
+- remove the following parameters from the file: `debug`, `noInfo`;
+- it is no longer possible to specify a loader without the `-loader` suffix. Change
+
+```javascript
+module: {
+    loaders: [
+      {test: /\.js$/, exclude: /node_modules/, loaders: ['babel']},
+      {test: /\.css$/, loaders: ['style','css']}
+    ]
+  }
+```
+
+to
+
+```javascript
+module: {
+    loaders: [
+      {test: /\.js$/, exclude: /node_modules/, loaders: ['babel-loader']},
+      {test: /\.css$/, loaders: ['style-loader','css']}
+    ]
+  }
+```
