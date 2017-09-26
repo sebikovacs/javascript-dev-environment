@@ -36,7 +36,7 @@ ___Packages and tools used:___
 ```
 - create a simple `express` server in the `srcServer.js` file that will serve the index.html file in the `src` folder
 
-```
+```javascript
 var express = require( "express" );
 var path = require( "path" );
 var open = require( "open" );
@@ -69,6 +69,7 @@ ___Packages and tools used:___
 - `npm install localtunnel -g`
 - start app
 - share work by exposing the local port: `lt --port 3000`
+- you can also add a subdomain `lt --port --subdomain something here 3000`
 - creates a local web server that can be shared
 
 #### NGROK setup:
@@ -89,3 +90,61 @@ ___Packages and tools used:___
 - only supports static files. moves the static files to their service
 - `npm install -g surge`
 - `surge`
+
+## Automating work with npm
+- add a command to the package.json
+```json
+"scripts": {
+	"start": "node ./buildScripts/srcServer.js",
+	"test": "echo \"Error: no test specified\" && exit 1"
+},
+```
+- command that will log a message to the console in a different color
+```json
+"scripts": {
+	"prestart": "node ./buildScripts/startMessage.js",
+	"start": "node ./buildScripts/srcServer.js",
+	"test": "echo \"Error: no test specified\" && exit 1"
+},
+```
+
+- command that will share work with localtunnel
+```json
+"scripts": {
+	"prestart": "node ./buildScripts/startMessage.js",
+	"start": "node ./buildScripts/srcServer.js",
+	"share": "lt --p 3000",
+	"test": "echo \"Error: no test specified\" && exit 1"
+},
+```
+
+- using `chalk` to add colour to console log messages
+```javascript
+var chalk = require( "chalk" );
+console.log( chalk.green( "Starting app in dev mode..." ) );
+```
+
+- `npm-run-all` to run scripts in parallel
+
+___Packages and tools used:___
+- npm scripts hook: `prestart`
+- chalk: `npm install chalk`
+- npm-run-all: `npm install npm-run-all`
+
+## Transpiling
+- install packages for babel: `npm install --save-dev babel-cli babel-core babel-preset-env babel-register`
+- create `.babelrc` config file:
+```json
+{
+  "presets": ["env"]
+}
+```
+- change build scripts to use `babel-node`
+```json
+{
+	"prestart": "babel-node ./buildScripts/startMessage.js",
+	"start": "babel-node ./buildScripts/srcServer.js",
+}
+```
+
+## Bundling
