@@ -61,3 +61,31 @@ app.listen( port, function( err ) {
 
 ___Packages and tools used:___
 - `npm install --save-dev open` - https://www.npmjs.com/package/open
+
+## Work in progress sharing
+- available tools and services: [localtunnel](https://localtunnel.github.io/www/), [ngrok](https://ngrok.com/), [surge](https://surge.sh/), [now](https://zeit.co/now)
+
+#### Localtunnel setup:
+- `npm install localtunnel -g`
+- start app
+- share work by exposing the local port: `lt --port 3000`
+- creates a local web server that can be shared
+
+#### NGROK setup:
+- signup
+- install ngrok
+- install authtoken
+- start local app
+- ./ngrok http and the port that your app is running on
+- creates a local web server that can be shared but it's password protected
+
+#### Now
+- `npm install -g now`
+- create start script
+- `now`
+- moves the application to the cloud
+
+#### Surge
+- only supports static files. moves the static files to their service
+- `npm install -g surge`
+- `surge`
