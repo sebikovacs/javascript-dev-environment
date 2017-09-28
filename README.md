@@ -297,3 +297,66 @@ describe( "index.html", () => {
 
 #### Continuous integration
 - tools: Travis, Jenkins, Appveyor, CircleCI, Semaphore, SnapCI
+
+## HTTP calls
+- to use fetch in the client just `import "whatwg-fetch"` in the file
+- inside the `fetch` promise there is a variable called `global` that will represent the `window` in the browser or something else on `node`
+
+```javascript
+getUsers().then( ( users ) => {
+	...
+
+	global.document.querySelector( ".users" ).innerHTML = usersBody;
+} );
+```
+
+#### Mock API
+
+## Generating mock data
+- it uses JSON Schema Faker (`jsf`) to create fake json data
+- to use it just `npm install json-schema-faker faker chance --save-dev`
+- `jsf` works with a [json configuration object](https://gist.github.com/coryhouse/300ed803148caaf9d4f3f45d1a03874d)
+- newer implementations of `jsf` no longer supports `faker` and `chance` libraries
+- `jsf` needs to be extended with these libraries
+```javascript
+jsf.extend( "faker", () => {
+	const faker = require( "faker" );
+	return faker;
+} );
+
+jsf.extend('chance', function(){
+  const Chance = require('chance');
+  const chance = new Chance();
+
+  return chance;
+});
+```
+
+- `jsf` works asynchronously and can be invoked like this:
+```javascript
+jsf.resolve( schema ).then( ( sample ) => {
+	const json = JSON.stringify( sample )
+
+	fs.writeFile( "./src/api/db.json", json, function( err ) {
+		if( err ) {
+			return console.log( chalk.red( err ) );
+		} else {
+			console.log( chalk.green( "Mock data generated." ) );
+		}
+	} )
+} );
+```
+- create a npm script: `"generate-mock-data": "babel-node buildScripts/generateMockData",`
+
+## Running a mock JSON server
+- it uses `json-server` to serve the data
+- create an npm script: `"start-mockapi": "json-server --watch src/api/db.json --port 3001"`
+
+___Packages and tools used:___
+- npm packages: `whatwg-fetch json-schema-faker`
+- [polyfill.io](https://polyfill.io)
+- nock
+- [JSON Schema](http://json-schema.org/)
+- [JSON Schema Faker](https://github.com/json-schema-faker/json-schema-faker)
+- generating random data: [faker.js](https://rawgit.com/Marak/faker.js/master/examples/browser/index.html), [chance.js](http://chancejs.com/), [randexp.js](https://github.com/fent/randexp.js?)
+- [JSON Server](https://github.com/typicode/json-server) for serving static json data
