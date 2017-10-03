@@ -360,3 +360,18 @@ ___Packages and tools used:___
 - [JSON Schema Faker](https://github.com/json-schema-faker/json-schema-faker)
 - generating random data: [faker.js](https://rawgit.com/Marak/faker.js/master/examples/browser/index.html), [chance.js](http://chancejs.com/), [randexp.js](https://github.com/fent/randexp.js?)
 - [JSON Server](https://github.com/typicode/json-server) for serving static json data
+
+
+## Building for production
+### Minification
+### Sourcemaps
+### Dynamic html generation
+### Bundle splitting
+### Cache Busting
+### Extract and minify CSS
+### Error Logging
+### HTML templates via ejs
+
+
+___Packages and tools used:___
+- npm packages: `compress rimraf`
