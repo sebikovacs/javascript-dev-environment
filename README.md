@@ -363,15 +363,90 @@ ___Packages and tools used:___
 
 
 ## Building for production
-### Minification
-### Sourcemaps
+### Minification and Sourcemaps
+- create file [webpac.config.prod.js](https://github.com/sebikovacs/jsdevenv-test/blob/master/webpack.config.prod.js)
+
+### Running the production build on local machine
+- create file `/buildScripts/distServer.js` where we will have an express server that serves the static built files
+- change server so it serves static files from the `dist` server
+- send the index file from the dist folder for every request
+- use compress to gzip the returned file
+```javascript
+app.use( compression() );
+app.use( express.static( "dist" ) );
+
+app.get( "/", function( req, res ) {
+	res.sendFile( path.join( __dirname, "../dist/index.html" ) );
+} );
+```
+
+- toggle the mock api by tweaking the getBaseUrl function to serve the api based on a query parameter in the url
+
+- add a `build` scripts:
+```json
+"clean-dist": "rimraf ./dist && mkdir dist",
+"prebuild": "npm-run-all clean-dist lint test",
+"build": "babel-node buildScripts/build.js",
+"postbuild": "babel-node buildScripts/distServer.js"
+```
+	1. remove dist folder and create it again
+	2. lint and test the code
+	3. run the build.js file
+	4. start the production/dist server
+
 ### Dynamic html generation
+- using html-webpack-plugin
+```javascript
+plugins: [
+	...
+	new HtmlWebpackPlugin( {
+		template: "src/index.html",
+		inject: true,
+		minify: {
+			removeComments: true,
+			collapseWhitespace: true,
+			removeRedundantAttributes: true,
+			useShortDoctype: true,
+			removeEmptyAttributes: true,
+			removeStyleLinkTypeAttributes: true,
+			keepClosingSlash: true,
+			minifyJS: true,
+			minifyCSS: true,
+			minifyURLs: true
+		},
+		trackJSToken: "ef5xxxx"
+	} ),
+	...
+]
+```
+
 ### Bundle splitting
-### Cache Busting
+- in case we want two separate files for the vendor scripts and the application scripts we can use the `webpack.optimize.CommonsChunkPlugin`
+```javascript
+...
+entry: {
+  vendor: path.resolve(__dirname, 'src/vendor'),
+  main: path.resolve(__dirname, 'src/index')
+},
+output: {
+  path: path.resolve(__dirname, 'dist'),
+  publicPath: '/',
+  filename: '[name].[chunkhash].js'
+},
+plugins: [
+  // create separate bundles
+  new webpack.optimize.CommonsChunkPlugin( {
+	  name: "vendor"
+  } ),
+...
+```
+
 ### Extract and minify CSS
 ### Error Logging
 ### HTML templates via ejs
 
 
+
+
 ___Packages and tools used:___
-- npm packages: `compress rimraf`
+- npm packages: `compress rimraf html-webpack-plugin`
