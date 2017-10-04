@@ -441,12 +441,46 @@ plugins: [
 ...
 ```
 
+### Cache Busting
+- this is done with the `webpack-md5-hash` plugin. changes needed in webpack.config.prod.js:
+```javascript
+output: {
+  path: path.resolve(__dirname, 'dist'),
+  publicPath: '/',
+  filename: '[name].[chunkhash].js' //chunkhash is a variable that will be substituted with the cachebusting hash
+},
+plugins: [
+	...
+	new WebpackMd5Hash(),
+	...
+]
+```
+
+
 ### Extract and minify CSS
+- this is done via the `ExtractTextPlugin`
+```javascript
+plugins: [
+	...
+	new ExtractTextPlugin( "[name].[contenthash].css" ),// contenthash will be substituted with the cachebusting hash
+	...
+]
+```
+
 ### Error Logging
-### HTML templates via ejs
+- we do this via Trackjs
 
-
-
+### Error Logging
+- adding scripts conditionally to the html file is done via `ejs`
+```html
+<% if ( htmlWebpackPlugin.options.trackJSToken ) { %>
+<!-- BEGIN TRACKJS -->
+<script type="text/javascript">window._trackJs = { token: '<%= htmlWebpackPlugin.options.trackJSToken %>' };</script>
+<script type="text/javascript" src="https://cdn.trackjs.com/releases/current/tracker.js"></script>
+<!-- END TRACKJS -->
+<% } %>
+```
 
 ___Packages and tools used:___
-- npm packages: `compress rimraf html-webpack-plugin`
+- npm packages: `compress rimraf html-webpack-plugin extract-text-webpack-plugin webpack-md5-hash`
+- tools: [trackjs](https://trackjs.com/)
