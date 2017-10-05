@@ -260,6 +260,17 @@ ___Packages and tools used:___
 
 #### Setup
 - create file that will setup tests: `/buildScripts/testSetup.js`
+```javascript
+// ES5 and commonJS cuz no transpilation
+
+// Register babel to transpile before the tests run
+require( "babel-register" )();
+require( "isomorphic-fetch"); // required otherwise it will throw an error
+
+// Disable webpack features that mocha does not understand
+require.extensions[ ".css" ] = function() {};
+require.extensions[ ".scss" ] = function() {};
+```
 - use [babel-register](https://www.npmjs.com/package/babel-register) "The require hook will bind itself to node's require and automatically compile files on the fly"
 - create a `test` script in npm package.json:
 ```json
